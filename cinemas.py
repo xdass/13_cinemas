@@ -4,6 +4,7 @@ from collections import defaultdict
 import time
 
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'
+#https://rating.kinopoisk.ru/7716.xml
 
 
 def get_proxies_list():
@@ -52,7 +53,17 @@ def fetch_movie_info(movie_title):
 
 
 def get_movie_id(movie_title):
-    pass
+    params = {'q': movie_title, 'topsuggest': 'true', 'ajax': 1}
+    response = requests.get(
+        'https://www.kinopoisk.ru/search/suggest',
+        headers={'user-agent': USER_AGENT},
+        params=params
+    )
+    return response.json()[0]['id']
+
+
+def get_movie_rating(movie_id):
+    response = requests.get('https://rating.kinopoisk.ru/{}.xml'.format(movie_id))
 
 
 def output_movies_to_console(movies):
@@ -64,5 +75,5 @@ if __name__ == '__main__':
     films = parse_afisha_list(raw_html)
     for film in films:
         time.sleep(2)
-        film_id = fetch_movie_info(film['film_name'])
-        film['film_id'] = film_id
+        film_id = get_movie_id(film['film_name'])
+        print(film_id)
