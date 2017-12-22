@@ -16,9 +16,9 @@ def parse_afisha_list(raw_html):
     movies_info = []
     soup = bs4.BeautifulSoup(raw_html, 'html.parser')
     movies_html = soup.select('.b-theme-schedule.b-theme-schedule .object')
-    for item in movies_html:
-        film_name = item.select('.m-disp-table h3 a[href]')[0].string
-        cinemas_ahref_list = item.select('.m-disp-table + table tr .b-td-item a')
+    for movie_html in movies_html:
+        film_name = movie_html.select('.m-disp-table h3 a[href]')[0].string
+        cinemas_ahref_list = movie_html.select('.m-disp-table + table tr .b-td-item a')
         cinemas = [cinema_ahref.string for cinema_ahref in cinemas_ahref_list]
         movies_info.append({
             'film_name': film_name,
@@ -72,7 +72,7 @@ def output_movies_to_console(movies, movies_to_print, min_in_cinemas):
         print('Рейтинг фильма(кинопоиск): {}'.format(movie['rating']))
         print('Проголосовало: {}'.format(movie['num_voice']))
         print('Идет в {} кинотеатрах'.format(movie['cinemas_count']))
-        print('-'*30)
+        print('-------------------------------------------------------')
 
 
 if __name__ == '__main__':
