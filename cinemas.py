@@ -90,7 +90,6 @@ if __name__ == '__main__':
         help='Minimum amount of cinemas where movie show(default is None)'
     )
     args = parser.parse_args()
-    print(args)
     print('Load afisha...')
     raw_html = fetch_afisha_page()
     print('Parsing movies from afisha...')
