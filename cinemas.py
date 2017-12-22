@@ -53,7 +53,6 @@ def get_movie_rating(movie_id):
 def collect_full_movie_info(movies):
     full_movies_info = []
     for film in movies:
-        time.sleep(1)
         film_id = get_movie_id(film['film_name'])
         if film_id:
             num_voice, rating = get_movie_rating(film_id)
