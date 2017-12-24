@@ -36,8 +36,11 @@ def get_movie_id(movie_title):
         params=params
     )
     movie_json_info = response.json()
-    if movie_json_info[0]['dataType'] == 'film':
-        return movie_json_info[0]['id']
+    if movie_json_info:
+        if movie_json_info[0]['dataType'] == 'film':
+            return movie_json_info[0]['id']
+        else:
+            return None
     else:
         return None
 
