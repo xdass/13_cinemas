@@ -11,9 +11,9 @@ def fetch_afisha_page():
 
 
 def make_data_request(url, params=None):
-    user_agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) ' \
-                 'AppleWebKit/537.36 (KHTML, like Gecko) ' \
-                 'Chrome/62.0.3202.94 Safari/537.36'
+    user_agent = '''Mozilla/5.0 (Windows NT 6.1; Win64; x64)
+                 AppleWebKit/537.36 (KHTML, like Gecko)
+                 Chrome/62.0.3202.94 Safari/537.36'''
     response = requests.get(url, params=params, headers={'User-Agent': user_agent})
     return response
 
@@ -40,10 +40,6 @@ def fetch_movie_id(movie_title):
     if movie_json_info:
         if movie_json_info[0]['dataType'] == 'film':
             return movie_json_info[0]['id']
-        else:
-            return None
-    else:
-        return None
 
 
 def fetch_movie_rating(movie_id):
