@@ -6,14 +6,14 @@ import requests
 
 def fetch_afisha_page():
     url = 'https://www.afisha.ru/msk/schedule_cinema/'
-    response = make_data_request(url)
+    response = url_request(url)
     return response.text
 
 
-def make_data_request(url, params=None):
-    user_agent = '''Mozilla/5.0 (Windows NT 6.1; Win64; x64)
-                 AppleWebKit/537.36 (KHTML, like Gecko)
-                 Chrome/62.0.3202.94 Safari/537.36'''
+def url_request(url, params=None):
+    user_agent = ("Mozilla/5.0 (Windows NT 6.1;Win64; x64)"
+                  "AppleWebKit/537.36(KHTML, like Gecko)"
+                  "Chrome/62.0.3202.94 Safari/537.36")
     response = requests.get(url, params=params, headers={'User-Agent': user_agent})
     return response
 
@@ -35,7 +35,7 @@ def parse_afisha_html(raw_html, movies_to_parse):
 def fetch_movie_id(movie_title):
     url = 'https://www.kinopoisk.ru/search/suggest'
     params = {'q': movie_title, 'topsuggest': 'true', 'ajax': 1}
-    response = make_data_request(url, params)
+    response = url_request(url, params)
     movie_json_info = response.json()
     if movie_json_info:
         if movie_json_info[0]['dataType'] == 'film':
@@ -44,7 +44,7 @@ def fetch_movie_id(movie_title):
 
 def fetch_movie_rating(movie_id):
     url = 'https://rating.kinopoisk.ru/{}.xml'.format(movie_id)
-    response = make_data_request(url)
+    response = url_request(url)
     soup = bs4.BeautifulSoup(response.text, 'html.parser')
     rating = soup.kp_rating.text
     num_voice = soup.kp_rating['num_vote']
