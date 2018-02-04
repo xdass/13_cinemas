@@ -14,7 +14,10 @@ def url_request(url, params=None):
     user_agent = ("Mozilla/5.0 (Windows NT 6.1;Win64; x64)"
                   "AppleWebKit/537.36(KHTML, like Gecko)"
                   "Chrome/62.0.3202.94 Safari/537.36")
-    response = requests.get(url, params=params, headers={'User-Agent': user_agent})
+    response = requests.get(url, params=params, headers={
+        'User-Agent': user_agent,
+        'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7'
+    })
     return response
 
 
@@ -32,14 +35,17 @@ def parse_afisha_html(raw_html, movies_to_parse):
     return movies_info
 
 
-def fetch_movie_id(movie_title):
-    url = 'https://www.kinopoisk.ru/search/suggest'
-    params = {'q': movie_title, 'topsuggest': 'true', 'ajax': 1}
+def fetch_movie_page(movie_title):
+    url = 'https://www.kinopoisk.ru/index.php'
+    params = {'kp_query': movie_title, 'first': 'yes', 'what': ''}
     response = url_request(url, params)
-    movie_json_info = response.json()
-    if movie_json_info:
-        if movie_json_info[0]['dataType'] == 'film':
-            return movie_json_info[0]['id']
+    return response.text
+
+
+def parse_film_id(film_html):
+    soup = bs4.BeautifulSoup(film_html, 'html.parser')
+    film_id = soup.select_one('button[data-film-id]').attrs['data-film-id']
+    return film_id
 
 
 def fetch_movie_rating(movie_id):
@@ -54,7 +60,8 @@ def fetch_movie_rating(movie_id):
 def collect_full_movies_info(movies):
     full_movies_info = []
     for movie in movies:
-        film_id = fetch_movie_id(movie['film_name'])
+        film_html = fetch_movie_page(movie['film_name'])
+        film_id = parse_film_id(film_html)
         if film_id:
             num_voice, rating = fetch_movie_rating(film_id)
             movie['num_voice'] = num_voice
@@ -79,7 +86,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Program to get movies info')
     parser.add_argument(
         '--movies_count',
-        default=10,
+        default=5,
         type=int,
         help='Amount of movies that will be parse(default is 10)'
     )
